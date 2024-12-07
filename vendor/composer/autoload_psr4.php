@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'NumeroPorExtenso\\' => array($baseDir . '/src'),
+    'LennonCecere\\' => array($baseDir . '/src'),
 );

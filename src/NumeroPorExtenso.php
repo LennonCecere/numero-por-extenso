@@ -1,20 +1,27 @@
 <?php
 
-namespace NumeroPorExtenso;
+namespace LennonCecere;
+
+use InvalidArgumentException;
 
 class NumeroPorExtenso
 {
-	public static function converter(float $numero)
+	public static function converter($numero): string
 	{
+		if (!is_string($numero)) {
+			throw new InvalidArgumentException('O valor passado não é uma string.');
+		}
+
 		$unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
 		$dezenas = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
 		$centenas = ['', 'cem', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
-		$milhares = ['', 'mil', 'milhão', 'bilhão', 'trilhão'];
+		$milhares = ['', 'mil', 'milhão', 'bilhão', 'trilhão', 'quatrilhão', 'quinquilhão', 'sextilhão', 'septilhão', 'octilhão', 'nonilhão'];
 
 		// Tratar separador decimal
-		$numero = str_replace([','], ['.'], $numero);
+		$numero = str_replace(['.',','], ['','.'], $numero);
 		$parteInteira = floor($numero);
-		$parteDecimal = ($numero - $parteInteira) * 100;
+		// Extraímos a parte decimal corretamente com dois dígitos
+		$parteDecimal = (float)explode('.', $numero)[1];
 
 		// Função recursiva para converter a parte inteira
 		$extensoInteiro = self::convertNumberToWords($parteInteira, $unidades, $dezenas, $centenas, $milhares);
@@ -22,7 +29,26 @@ class NumeroPorExtenso
 		// Converte a parte decimal para extenso sem escalas
 		$extensoDecimal = self::convertNumberToWords($parteDecimal, $unidades, $dezenas, $centenas, $milhares);
 
-		return ucfirst("{$extensoInteiro} reais e {$extensoDecimal} centavos");
+		// Ajusta o singular/plural de centavos
+		if ($parteDecimal == 1) {
+			$extensoDecimal = 'um centavo';
+		} elseif ($parteDecimal > 1) {
+			$extensoDecimal .= ' centavos';
+		}
+
+		// Ajusta o singular/plural do real
+		if ($parteInteira == 1) {
+			$extensoInteiro = 'um real';
+		} elseif ($parteInteira > 1) {
+			$extensoInteiro .= ' reais';
+		}
+
+		// Verifica se a parte decimal é zero e ajusta o retorno
+		if ($parteDecimal == 0) {
+			return ucfirst("{$extensoInteiro}");
+		}
+
+		return ucfirst("{$extensoInteiro} e {$extensoDecimal}");
 	}
 
 	private static function convertNumberToWords($number, $unidades, $dezenas, $centenas, $milhares)
@@ -50,7 +76,13 @@ class NumeroPorExtenso
 		$extenso = '';
 
 		if ($number >= 100) {
-			$extenso .= $centenas[(int)($number / 100)] . ' e ';
+			// Verifica se o número é exatamente 100
+			if ($number == 100) {
+				$extenso .= 'cem';
+			} else {
+				// Para números entre 101 e 199, deve-se usar "cento"
+				$extenso .= 'cento e ';
+			}
 			$number %= 100;
 		}
 
