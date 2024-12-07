@@ -7,7 +7,7 @@ use LennonCecere\NumeroPorExtenso;
 echo "Iniciando o teste...\n";
 
 try {
-	echo NumeroPorExtenso::converter('1,2');
+	echo NumeroPorExtenso::converter(123.89);
 } catch (Throwable $e) {
 	echo "Erro: " . $e->getMessage();
 }
