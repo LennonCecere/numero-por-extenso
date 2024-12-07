@@ -8,8 +8,8 @@ class NumeroPorExtenso
 {
 	public static function converter($numero): string
 	{
-		if (!is_string($numero)) {
-			throw new InvalidArgumentException('O valor passado não é uma string.');
+		if (!is_float($numero)) {
+			throw new InvalidArgumentException('O valor passado não é float.');
 		}
 
 		$unidades = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
@@ -17,11 +17,9 @@ class NumeroPorExtenso
 		$centenas = ['', 'cem', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'];
 		$milhares = ['', 'mil', 'milhão', 'bilhão', 'trilhão', 'quatrilhão', 'quinquilhão', 'sextilhão', 'septilhão', 'octilhão', 'nonilhão'];
 
-		// Tratar separador decimal
-		$numero = str_replace(['.',','], ['','.'], $numero);
 		$parteInteira = floor($numero);
 		// Extraímos a parte decimal corretamente com dois dígitos
-		$parteDecimal = (float)explode('.', $numero)[1];
+		$parteDecimal = ($numero - $parteInteira) * 100;
 
 		// Função recursiva para converter a parte inteira
 		$extensoInteiro = self::convertNumberToWords($parteInteira, $unidades, $dezenas, $centenas, $milhares);
@@ -30,9 +28,9 @@ class NumeroPorExtenso
 		$extensoDecimal = self::convertNumberToWords($parteDecimal, $unidades, $dezenas, $centenas, $milhares);
 
 		// Ajusta o singular/plural de centavos
-		if ($parteDecimal == 1) {
+		if ($parteDecimal == 01) {
 			$extensoDecimal = 'um centavo';
-		} elseif ($parteDecimal > 1) {
+		} elseif ($parteDecimal > 01) {
 			$extensoDecimal .= ' centavos';
 		}
 
