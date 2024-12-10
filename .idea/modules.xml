@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/numero-por-extenso.iml" filepath="$PROJECT_DIR$/.idea/numero-por-extenso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/numeros-por-extenso.iml" filepath="$PROJECT_DIR$/.idea/numeros-por-extenso.iml" />
     </modules>
   </component>
 </project>
