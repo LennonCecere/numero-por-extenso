@@ -4,13 +4,14 @@ namespace LennonCecere;
 
 use InvalidArgumentException;
 
-class NumeroPorExtenso extends Geral
+class ValorPorExtenso extends Geral
 {
+	const REGEX = '/^R?\$\s?(\d{1,3}(\.\d{3})*|\d+)(,\d{2})?$/';
+
 	public static function converter($numero): string
 	{
-		if (!is_float($numero) && !is_int($numero)) {
-			throw new InvalidArgumentException('O valor informado não é válido.');
-		}
+		if (!self::validarEntrada($numero)) throw new InvalidArgumentException('O valor informado não é válido.');
+		$numero = (float) str_replace(['R$','.',','], ['','','.'], $numero);
 
 		$parteInteira = floor($numero);
 		// Extraímos a parte decimal corretamente com dois dígitos
@@ -21,6 +22,20 @@ class NumeroPorExtenso extends Geral
 
 		// Converte a parte decimal para extenso sem escalas
 		$extensoDecimal = self::convertNumberToWords($parteDecimal, self::UNIDADES, self::DEZENAS, self::CENTENAS, self::MILHARES);
+
+		// Ajusta o singular/plural de centavos
+		if ($parteDecimal == 01) {
+			$extensoDecimal = 'um centavo';
+		} elseif ($parteDecimal > 01) {
+			$extensoDecimal .= ' centavos';
+		}
+
+		// Ajusta o singular/plural do real
+		if ($parteInteira == 1) {
+			$extensoInteiro = 'um real';
+		} elseif ($parteInteira > 1) {
+			$extensoInteiro .= ' reais';
+		}
 
 		// Verifica se a parte decimal é zero e ajusta o retorno
 		if ($parteDecimal == 0) {
@@ -75,5 +90,20 @@ class NumeroPorExtenso extends Geral
 		}
 
 		return trim($extenso);
+	}
+
+	private static function validarEntrada($entrada) {
+		// Verifica se é um float
+		if (is_float($entrada)) {
+			return true;
+		}
+
+		// Verifica se é uma string e corresponde ao regex
+		if (is_string($entrada) && preg_match(self::REGEX, $entrada)) {
+			return true;
+		}
+
+		// Caso contrário, é inválido
+		return false;
 	}
 }
