@@ -1,6 +1,6 @@
 {
-  "name": "lennon-cecere/numero-por-extenso",
-  "description": "Uma biblioteca para transcrever um numero float por extenso",
+  "name": "lennon-cecere/numeros-por-extenso",
+  "description": "Uma biblioteca para transcrever numeros por extenso",
   "type": "library",
   "license": "MIT",
   "autoload": {
